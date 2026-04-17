@@ -1,0 +1,194 @@
+/* Unique Prefixed Styles for Job Portal */
+.jp-main-wrapper {
+  --jp-primary: #2563eb;
+  --jp-bg: #f8fafc;
+  --jp-text: #1e293b;
+  --jp-muted: #64748b;
+  --jp-border: #e2e8f0;
+  
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--jp-bg);
+  font-family: 'Inter', sans-serif;
+  overflow: hidden; /* Important: Prevents whole page scroll */
+}
+
+/* Fixed Header Area */
+.jp-fixed-top {
+  flex-shrink: 0;
+  background: white;
+  z-index: 50;
+  border-bottom: 1px solid var(--jp-border);
+}
+
+.jp-navbar {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--jp-border);
+}
+
+.jp-nav-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.jp-logo { font-size: 1.4rem; font-weight: 800; margin: 0; color: var(--jp-text); }
+.jp-logo span { color: var(--jp-primary); }
+
+.jp-add-btn {
+  background: var(--jp-primary);
+  color: white; border: none; padding: 10px 18px;
+  border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+
+.jp-hero {
+  text-align: center;
+  padding: 25px 20px;
+}
+
+.jp-hero h1 { font-size: 1.8rem; margin-bottom: 20px; color: var(--jp-text); }
+
+/* Filter Bar */
+.jp-filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.jp-filter-item {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--jp-border);
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.jp-filter-item.active {
+  background: var(--jp-primary);
+  color: white;
+  border-color: var(--jp-primary);
+}
+
+/* Scrollable Area */
+.jp-scroll-container {
+  flex: 1;
+  overflow-y: auto; /* This enables scrolling just for jobs */
+  padding: 30px 20px;
+}
+
+.jp-content-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.jp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Job Cards */
+.jp-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--jp-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.jp-card-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.jp-cat-badge {
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.jp-type { color: var(--jp-primary); font-size: 12px; font-weight: 600; }
+
+.jp-job-title { margin: 0 0 5px 0; font-size: 1.2rem; color: #0f172a; }
+.jp-comp-name { font-weight: 600; margin: 0; color: var(--jp-text); }
+.jp-loc-text { color: var(--jp-muted); font-size: 13px; margin: 5px 0 15px; }
+
+.jp-job-desc {
+  font-size: 14px;
+  color: var(--jp-muted);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.jp-view-btn {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--jp-border);
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Modal scoped */
+.jp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.jp-modal-box {
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 16px;
+}
+
+.jp-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.jp-close-x { background: none; border: none; font-size: 24px; cursor: pointer; }
+
+.jp-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.jp-input-field { margin-bottom: 15px; }
+.jp-input-field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+
+.jp-input-field input, 
+.jp-input-field select, 
+.jp-input-field textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--jp-border);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.jp-submit-action {
+  width: 100%;
+  padding: 12px;
+  background: var(--jp-primary);
+  color: white; border: none; border-radius: 6px;
+  font-weight: 700; cursor: pointer;
+}
