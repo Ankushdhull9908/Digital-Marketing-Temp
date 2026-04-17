@@ -38,10 +38,10 @@ const Navbar = () => {
                 <ul className="p-2 bg-base-200 rounded-md">
                   <li><Link to="/resume-builder" onClick={handleLinkClick}>Resume Builder</Link></li>
                   <li><Link to="/PortfolioMaker" onClick={handleLinkClick}>Portfolio Maker</Link></li>
-                  <li><Link to="/influencer" onClick={handleLinkClick}>Influencer Form</Link></li>
+                  <li><Link to="/influencer-form" onClick={handleLinkClick}>Influencer Form</Link></li>
                   <li><Link to="/jobportal" onClick={handleLinkClick}>Job Portal</Link></li>
                   <li><Link to="/buysubdomain" onClick={handleLinkClick}>Buy Domain</Link></li>
-                  <li><Link to="/landing-page" onClick={handleLinkClick}>Landing Page</Link></li>
+                  <li><Link to="/landingpage" onClick={handleLinkClick}>Landing Page</Link></li>
                 </ul>
               </details>
             </li>
