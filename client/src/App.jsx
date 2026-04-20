@@ -17,6 +17,7 @@ import InfluencerPage from './Pages/InfluencerPage'
 import LandingPage from './Pages/LandingPage'
 import PortfolioTemplates from './Pages/PortfolioTemplates'
 import SipCalculator from './Pages/SipCalculator'
+import Footer from './Components/Footer'
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
         <Route path='/landingpage' element={<LandingPage/>}/>
         <Route path='/SIPCalculator' element={<SipCalculator/>}/>
       </Routes>
+      <Footer/>
     </>
   )
 }
