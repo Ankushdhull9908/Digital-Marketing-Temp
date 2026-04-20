@@ -18,6 +18,7 @@ import LandingPage from './Pages/LandingPage'
 import PortfolioTemplates from './Pages/PortfolioTemplates'
 import SipCalculator from './Pages/SipCalculator'
 import Footer from './Components/Footer'
+import OurServices from './Pages/OurServices'
 
 function App() {
 
@@ -34,6 +35,7 @@ function App() {
         <Route path='/PortfolioTemplates' element={<PortfolioTemplates/>}></Route>
         <Route path="/portfolio-maker/:templateId" element={<PortfolioMaker />} />
         <Route path='/jobportal' element={<JobPortal/>}></Route>
+        <Route path='/OurServices' element={<OurServices/>}></Route>
         <Route path='/about' element={<AboutUs/>}/>
         <Route path='/influencer-form' element={<InfluencerPage/>}/>
         <Route path='/landingpage' element={<LandingPage/>}/>

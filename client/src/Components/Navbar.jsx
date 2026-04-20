@@ -58,7 +58,7 @@ const style = `
           </label>
           <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[50] p-2 shadow bg-base-100 rounded-box w-52 border border-base-200">
             <li><Link to="/" onClick={handleLinkClick}>Home</Link></li>
-            <li><Link to="/services" onClick={handleLinkClick}>Our Services</Link></li>
+            <li><Link to="/OurServices" onClick={handleLinkClick}>Our Services</Link></li>
             <li>
               <details ref={mobileDetailsRef}>
                 <summary>Advance Features</summary>
@@ -97,7 +97,7 @@ const style = `
 
         <ul className="menu menu-horizontal px-1 gap-2 font-medium">
           <li><Link to="/" className="hover:text-orange-600" onClick={handleLinkClick}>Home</Link></li>
-          <li><Link to="/services" className="hover:text-orange-600" onClick={handleLinkClick}>Our Services</Link></li>
+          <li><Link to="/OurServices" className="hover:text-orange-600" onClick={handleLinkClick}>Our Services</Link></li>
 
           <li className="dropdown dropdown-hover">
             <div tabIndex={0} role="button" className="flex items-center gap-1">
