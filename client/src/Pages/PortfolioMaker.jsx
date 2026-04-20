@@ -181,7 +181,7 @@ const PortfolioMaker = () => {
         </main>
       </div>
 
-      {/* --- PRINT CSS --- */}
+      {/* --- PRINT CSS -- */}
       <style>{`
         @media print {
           .no-scrollbar { overflow: visible !important; }
