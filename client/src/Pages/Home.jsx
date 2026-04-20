@@ -111,7 +111,7 @@ const Home = () => {
 
             {/* Tool 6 (Placeholder for Landing Page) */}
             <motion.div whileHover={{ scale: 1.02 }}>
-              <Link to="//landingpage" className="block h-full bg-white/5 backdrop-blur-lg border border-white/10 p-10 rounded-[2rem] hover:bg-white/10" >
+              <Link to="/landingpage" className="block h-full bg-white/5 backdrop-blur-lg border border-white/10 p-10 rounded-[2rem] hover:bg-white/10" >
                 <div className="text-5xl mb-6">🚀</div>
                 <h4 className="text-2xl font-bold mb-2 text-slate-300">Landing Page</h4>
                 <p className="text-slate-400 text-sm mb-6">Deploy conversion-ready storefronts.</p>
