@@ -13,16 +13,16 @@ const Footer = () => {
 
   const footerLinks = {
     quickLinks: [
-      { name: 'Home', href: '#' },
-      { name: 'About', href: '#' },
-      { name: 'Contact', href: '#' },
-      { name: 'Our Service', href: '#' },
+      { name: 'Home', href: '/' },
+      { name: 'About', href: '/about' },
+      { name: 'Contact', href: '/contact' },
+      { name: 'Our Service', href: '/OurServices' },
     ],
     importantLinks: [
       { name: 'Privacy Policy', href: '#' },
       { name: 'Terms & Conditions', href: '#' },
       { name: 'Career', href: '#' },
-      { name: 'Why SEO', href: '#' },
+      { name: 'Why SEO', href: '/WhySEO' },
     ],
     contactInfo: {
       phone: '+91 99999-99999',

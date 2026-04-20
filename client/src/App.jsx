@@ -19,6 +19,7 @@ import PortfolioTemplates from './Pages/PortfolioTemplates'
 import SipCalculator from './Pages/SipCalculator'
 import Footer from './Components/Footer'
 import OurServices from './Pages/OurServices'
+import WhySEO from './Pages/WhySEO'
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
         <Route path='/influencer-form' element={<InfluencerPage/>}/>
         <Route path='/landingpage' element={<LandingPage/>}/>
         <Route path='/SIPCalculator' element={<SipCalculator/>}/>
+        <Route path='/WhySEO' element={<WhySEO/>}/>
       </Routes>
       <Footer/>
     </>
