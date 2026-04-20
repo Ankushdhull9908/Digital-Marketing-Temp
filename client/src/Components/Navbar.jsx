@@ -113,6 +113,7 @@ const style = `
               <li><Link to="/jobportal" className="hover:text-orange-600" onClick={handleLinkClick}>Job Portal</Link></li>
               <li><a href="https://www.hostinger.com/in/free-domain?utm_id=381673073&msclkid=5b0f7f6e5c631613eac0168be30069bd&utm_source=bing&utm_medium=cpc&utm_campaign=Brand-Exact|NT:Bing|LO:IN&utm_term=hostinger&utm_content=Exact+|+Hostinger" target="_blank" rel="noopener noreferrer" className="hover:text-orange-600" onClick={handleLinkClick}>Buy Domain</a></li>
               <li><Link to="/landingpage" className="hover:text-orange-600" onClick={handleLinkClick}>Landing Page</Link></li>
+              <li><Link to="/SIPCalculator" className="hover:text-orange-600" onClick={handleLinkClick}>SIP Calculator</Link></li>
             </ul>
           </li>
            <li><Link to="/about" className="hover:text-orange-600" onClick={handleLinkClick}>About</Link></li>
