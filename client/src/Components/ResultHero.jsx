@@ -1,8 +1,9 @@
 import React from 'react';
-import { motion } from 'framer-motion'; // Step 1: Import motion
+import { motion } from 'framer-motion';
 import { 
   CheckCircle, Quote, PhoneCall, HelpCircle, 
-  ChevronDown, MessageSquare 
+  ChevronDown, MessageSquare, Globe, Smartphone, 
+  Share2, Zap, ArrowRight 
 } from 'lucide-react';
 
 const ResultHero = () => {
@@ -12,6 +13,53 @@ const ResultHero = () => {
     "Higher Google Rankings", "More Website Traffic", 
     "Better Lead Generation", "Increased Sales", 
     "Strong Online Presence"
+  ];
+
+  const packages = [
+    {
+      title: "Website Designing",
+      price: "5,600",
+      icon: <Globe className="text-[#3D7E8C]" size={28} />,
+      desc: "We create modern, responsive, and user-friendly websites that help you attract customers and grow your business.",
+      features: [
+        "Fully Responsive (Mobile + Desktop)",
+        "Modern & Professional Design",
+        "Basic SEO Setup",
+        "Fast Loading Speed",
+        "WhatsApp & Call Integration",
+        "1 Year Basic Support Guidance"
+      ]
+    },
+    {
+      title: "Social Media Management",
+      price: "4,000",
+      suffix: "/ month",
+      icon: <Share2 className="text-[#F39221]" size={28} />,
+      desc: "We manage your social media platforms to increase engagement, build your brand, and generate leads.",
+      features: [
+        "Post Creation (Graphics + Content)",
+        "Monthly Content Calendar",
+        "Regular Posting (12–15 Posts)",
+        "Caption & Hashtag Strategy",
+        "Basic Audience Engagement",
+        "Performance Insights"
+      ],
+      featured: true
+    },
+    {
+      title: "App Development",
+      price: "25,000",
+      icon: <Smartphone className="text-[#3D7E8C]" size={28} />,
+      desc: "We develop high-quality mobile applications tailored to your business needs.",
+      features: [
+        "Custom App Design (UI/UX)",
+        "Android App Development",
+        "User-Friendly Interface",
+        "Basic Admin Panel",
+        "API Integration (if required)",
+        "App Launch Support"
+      ]
+    }
   ];
 
   // Animation Variants
@@ -69,8 +117,81 @@ const ResultHero = () => {
         </div>
       </section>
 
-      {/* --- SECTION 2: TESTIMONIALS --- */}
+      {/* --- SECTION: OUR PACKAGES (RESPONSIVE) --- */}
       <section className="py-24 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-6xl font-black mb-4 tracking-tight">
+              Our <span className="text-[#F39221]">Packages</span>
+            </h2>
+            <div className="w-24 h-2 bg-[#3D7E8C] mx-auto rounded-full"></div>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+            {packages.map((pkg, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -10 }}
+                className={`card bg-white rounded-[2.5rem] border-2 flex flex-col h-full ${
+                  pkg.featured ? 'border-[#F39221] shadow-xl' : 'border-slate-100 shadow-sm'
+                } transition-all duration-300`}
+              >
+                <div className="p-8 md:p-10 flex flex-col h-full">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="p-4 bg-slate-50 rounded-2xl">
+                      {pkg.icon}
+                    </div>
+                    {pkg.featured && (
+                      <span className="badge bg-[#F39221] border-none text-white font-bold p-3">Popular</span>
+                    )}
+                  </div>
+
+                  <h3 className="text-2xl font-black mb-3">{pkg.title}</h3>
+                  <p className="text-slate-500 text-sm font-medium leading-relaxed mb-6">
+                    {pkg.desc}
+                  </p>
+
+                  <div className="mb-8">
+                    <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Starting Price</span>
+                    <div className="flex items-baseline gap-1 mt-1">
+                      <span className="text-4xl font-black text-slate-900">₹{pkg.price}</span>
+                      <span className="text-slate-500 font-bold text-lg">{pkg.suffix || "/-"}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 mb-10 flex-grow">
+                    <p className="font-black text-xs uppercase tracking-[0.2em] text-[#3D7E8C]">What You Get:</p>
+                    {pkg.features.map((feature, idx) => (
+                      <div key={idx} className="flex items-start gap-3">
+                        <CheckCircle size={18} className="text-success mt-0.5 flex-shrink-0" />
+                        <span className="text-sm font-bold text-slate-600 leading-tight">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button className={`btn btn-block rounded-2xl h-14 border-none text-white font-black group ${
+                    pkg.featured ? 'bg-[#F39221] hover:bg-orange-600' : 'bg-[#3D7E8C] hover:bg-[#2D5E69]'
+                  }`}>
+                    Get Started <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- SECTION 2: TESTIMONIALS --- */}
+      <section className="py-24 px-6 bg-slate-50">
         <div className="max-w-5xl mx-auto">
           <motion.h2 
             initial={{ opacity: 0, x: -20 }}
@@ -92,7 +213,7 @@ const ResultHero = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.2 }}
-                className="relative p-10 rounded-[2rem] bg-[#F8FAFB] border border-slate-100"
+                className="relative p-10 rounded-[2rem] bg-white border border-slate-100 shadow-sm"
               >
                 <Quote className="absolute top-6 left-6 text-[#F39221]/20" size={40} fill="currentColor" />
                 <p className="italic text-lg text-slate-600 mb-6 relative z-10 leading-relaxed">"{client.text}"</p>
@@ -119,7 +240,6 @@ const ResultHero = () => {
           viewport={{ once: true }}
           className="max-w-6xl mx-auto rounded-[3rem] bg-slate-800 p-10 md:p-20 text-center text-white relative overflow-hidden shadow-2xl"
         >
-          {/* Animated Background Glow */}
           <motion.div 
             animate={{ 
               scale: [1, 1.2, 1],
