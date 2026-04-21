@@ -37,7 +37,7 @@ const style = `
     <>
    <style>{style}</style>
       
-      {/* MARQUEE */}
+      {/* MARQUE */}
       <div className="overflow-hidden bg-slate-900 py-2.5 border-b border-white/5 select-none">
         <div className="marquee-container">
           {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
