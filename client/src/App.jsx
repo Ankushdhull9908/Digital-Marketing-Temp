@@ -16,6 +16,7 @@ import SipCalculator from './Pages/SipCalculator'
 import Footer from './Components/Footer'
 import OurServices from './Pages/OurServices'
 import WhySEO from './Pages/WhySEO'
+import Contact from './Pages/Contact'
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/portfolio-maker/:templateId" element={<PortfolioMaker />} />
         <Route path='/jobportal' element={<JobPortal/>}></Route>
         <Route path='/OurServices' element={<OurServices/>}></Route>
+        <Route path='/contact' element={<Contact/>}/>
         <Route path='/about' element={<AboutUs/>}/>
         <Route path='/influencer-form' element={<InfluencerPage/>}/>
         <Route path='/landingpage' element={<LandingPage/>}/>
