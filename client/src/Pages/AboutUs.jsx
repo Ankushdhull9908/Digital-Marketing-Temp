@@ -22,7 +22,7 @@ const AboutUs = () => {
   return (
     <div className="bg-white font-sans text-slate-900 selection:bg-[#3D7E8C]/20 overflow-x-hidden">
       
-      {/* --- PREMIUM HERO SECTION --- */}
+      {/* -- PREMIUM HERO SECTION --- */}
       <section className="relative pt-32 pb-24 px-6 bg-[#f8fafc] overflow-hidden">
         {/* Thematic Background Blurs */}
         <div className="absolute top-0 -right-20 w-[500px] h-[500px] bg-[#3D7E8C]/10 rounded-full blur-[120px] animate-pulse" />
