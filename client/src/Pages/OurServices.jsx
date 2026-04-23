@@ -124,23 +124,27 @@ const OurServices = () => {
   return (
     <div className="min-h-screen bg-white font-montserrat text-slate-900">
       {/* --- HERO SECTION --- */}
-      <section className="py-20 px-6 bg-slate-50 border-b border-slate-100">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-end gap-8">
-            <div className="max-w-2xl">
-              <span className="text-xs font-black uppercase tracking-[0.3em] text-[#3D7E8C] mb-4 block">
-                What We Offer
+     <section className="relative py-24 px-6 bg-white overflow-hidden">
+        {/* Subtle Brand Blobs */}
+        <div className="absolute top-0 left-0 w-96 h-96 bg-[#3D7E8C]/5 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#F39221]/5 rounded-full blur-[100px] translate-x-1/2 translate-y-1/2" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-12">
+            <div className="max-w-3xl text-center md:text-left">
+              <span className="inline-block px-4 py-1.5 rounded-full bg-[#3D7E8C]/10 text-[#3D7E8C] text-xs font-black uppercase tracking-widest mb-6">
+                WHAT WE OFFER
               </span>
-              <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6">
-                End-to-End <br /> <span className="text-slate-300 italic">Digital Solutions.</span>
+              <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 leading-tight">
+               End-to-End <span className="text-[#3D7E8C]">Digital</span> <br /> 
+                <span className="text-[#F39221] italic">Solutions.</span>
               </h1>
-              <p className="text-lg text-slate-500 font-medium leading-relaxed">
-                We help your business grow, scale, and succeed online. 
-                Everything you need under one roof.
+              <p className="text-lg text-slate-500 font-medium leading-relaxed max-w-xl">
+               We help your business grow, scale, and succeed online. Everything you need under one roof.
               </p>
             </div>
-            <button className="btn btn-lg bg-slate-900 text-white border-none rounded-2xl px-10 gap-3 group">
-              Get A Quote <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+            <button className="bg-slate-900 text-white px-10 py-5 rounded-2xl font-black uppercase tracking-widest hover:bg-[#3D7E8C] transition-all duration-300 flex items-center gap-3 group">
+              Start a Project <ArrowRight className="group-hover:translate-x-2 transition-transform" />
             </button>
           </div>
         </div>
@@ -150,7 +154,7 @@ const OurServices = () => {
       <section className="py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-16">
-            <h2 className="text-3xl font-black">Digital Marketing</h2>
+            <h2 className="text-[#F39221] text-3xl font-black">Digital Marketing</h2>
             <div className="h-px flex-1 bg-slate-100" />
           </div>
           
@@ -166,7 +170,7 @@ const OurServices = () => {
       <section className="py-24 px-6 bg-[#FDFDFD]">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center gap-4 mb-16">
-            <h2 className="text-3xl font-black">Development & Design</h2>
+            <h2 className="text-[#F39221] text-3xl font-black">Development & Design</h2>
             <div className="h-px flex-1 bg-slate-100" />
           </div>
           
