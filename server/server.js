@@ -6,6 +6,7 @@ import packageRoutes from "./routes/packages.js";
 import clientRoutes from "./routes/clients.js";
 import faqRoutes from "./routes/faqs.js";
 import contactRoutes from "./routes/contact.js";
+import TestimonialRoutes from './routes/Testimonials.js'
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use("/api/packages", packageRoutes);
 app.use("/api/clients", clientRoutes);
 app.use("/api/faqs", faqRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/testimonials", TestimonialRoutes);
 
 // test
 app.get("/", (req, res) => {

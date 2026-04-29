@@ -9,7 +9,7 @@ import { useAuth } from "../context/Context";
 
 const ResultHero = () => {
   // Brand Colors: Teal: #3D7E8C | Orange: #F39221
-  const { faqs, clients, loading } = useAuth();
+  const { faqs, clients, loading,packages } = useAuth();
 
   const results = [
     "Higher Google Rankings", "More Website Traffic", 
@@ -17,53 +17,7 @@ const ResultHero = () => {
     "Strong Online Presence"
   ];
 
-  const packages = [
-    {
-      title: "Website Designing",
-      price: "5,600",
-      icon: <Globe className="text-[#3D7E8C]" size={28} />,
-      desc: "We create modern, responsive, and user-friendly websites that help you attract customers and grow your business.",
-      features: [
-        "Fully Responsive (Mobile + Desktop)",
-        "Modern & Professional Design",
-        "Basic SEO Setup",
-        "Fast Loading Speed",
-        "WhatsApp & Call Integration",
-        "1 Year Basic Support Guidance"
-      ]
-    },
-    {
-      title: "Social Media Management",
-      price: "4,000",
-      suffix: "/ month",
-      icon: <Share2 className="text-[#F39221]" size={28} />,
-      desc: "We manage your social media platforms to increase engagement, build your brand, and generate leads.",
-      features: [
-        "Post Creation (Graphics + Content)",
-        "Monthly Content Calendar",
-        "Regular Posting (12–15 Posts)",
-        "Caption & Hashtag Strategy",
-        "Basic Audience Engagement",
-        "Performance Insights"
-      ],
-      featured: true
-    },
-    {
-      title: "App Development",
-      price: "25,000",
-      icon: <Smartphone className="text-[#3D7E8C]" size={28} />,
-      desc: "We develop high-quality mobile applications tailored to your business needs.",
-      features: [
-        "Custom App Design (UI/UX)",
-        "Android App Development",
-        "User-Friendly Interface",
-        "Basic Admin Panel",
-        "API Integration (if required)",
-        "App Launch Support"
-      ]
-    }
-  ];
-
+ 
   // Animation Variant
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },

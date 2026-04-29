@@ -14,6 +14,7 @@ export const ContextProvider = ({ children }) => {
   const [packages, setPackages] = useState([]);
   const [clients,  setClients]  = useState([]);
   const [loading,  setLoading]  = useState(true);
+  const [Testimonials,setTestimonials] = useState([])
 
   // check token on reload
   useEffect(() => {
@@ -25,14 +26,16 @@ export const ContextProvider = ({ children }) => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [faqData, pkgData, clientData] = await Promise.all([
+        const [faqData, pkgData, clientData,test] = await Promise.all([
           get("/faqs"),          // only active FAQs (no ?all=true)
           get("/packages"),      // only active packages
-          get("/clients"),       // only active clients
+          get("/clients"),
+          get('/testimonials')      // only active clients
         ]);
         setFaqs(Array.isArray(faqData)     ? faqData     : []);
         setPackages(Array.isArray(pkgData) ? pkgData     : []);
         setClients(Array.isArray(clientData) ? clientData : []);
+        setTestimonials(Array.isArray(test) ? test : [])
       } catch (err) {
         console.error("Failed to load homepage data:", err);
       } finally {
@@ -45,6 +48,7 @@ export const ContextProvider = ({ children }) => {
 
 
   console.log('faq',faqs)
+  console.log('test',Testimonials)
   
 
   // ── auth helpers ──────────────────────────────────────────────────────────
@@ -59,7 +63,7 @@ export const ContextProvider = ({ children }) => {
   };
 
   return (
-    <Context.Provider value={{ user, login, logout, faqs, packages, clients, loading }}>
+    <Context.Provider value={{ user, login, logout, faqs, packages, clients, loading,Testimonials }}>
       {children}
     </Context.Provider>
   );

@@ -2,17 +2,19 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   LayoutDashboard, FileText, BarChart3, LogOut, Plus, HelpCircle,
-  Users, Package, Mail, Edit3, Trash2, Eye, X, Check, ChevronDown
+  Users, Package, Mail, Edit3, Trash2, Eye, X, Check, Star, Quote,
 } from "lucide-react";
 
-var API = "https://digital-marketing-temp.onrender.com/api" ? "https://digital-marketing-temp.onrender.com/api": "http://localhost:5000/api"
+var API = "https://digital-marketing-temp.onrender.com/api"
+  ? "https://digital-marketing-temp.onrender.com/api"
+  : "http://localhost:5000/api";
 
 // ─── tiny fetch helpers ────────────────────────────────────────────────────
-const get  = (url)        => fetch(API + url).then(r => r.json());
-const post = (url, body)  => fetch(API + url, { method:"POST",  headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) }).then(r => r.json());
-const put  = (url, body)  => fetch(API + url, { method:"PUT",   headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) }).then(r => r.json());
-const del  = (url)        => fetch(API + url, { method:"DELETE" }).then(r => r.json());
-const patch= (url, body)  => fetch(API + url, { method:"PATCH", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) }).then(r => r.json());
+const get   = (url)       => fetch(API + url).then(r => r.json());
+const post  = (url, body) => fetch(API + url, { method:"POST",   headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) }).then(r => r.json());
+const put   = (url, body) => fetch(API + url, { method:"PUT",    headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) }).then(r => r.json());
+const del   = (url)       => fetch(API + url, { method:"DELETE" }).then(r => r.json());
+const patch = (url, body) => fetch(API + url, { method:"PATCH",  headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) }).then(r => r.json());
 
 // ─── shared badge ─────────────────────────────────────────────────────────
 function Badge({ text, color }) {
@@ -41,7 +43,7 @@ function Modal({ title, onClose, onSave, children }) {
             <X size={18} className="text-slate-500" />
           </button>
         </div>
-        <div className="px-6 py-5 space-y-4">{children}</div>
+        <div className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">{children}</div>
         <div className="px-6 py-4 border-t border-slate-100 flex justify-end gap-3">
           <button onClick={onClose} className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-medium text-sm hover:bg-slate-50">Cancel</button>
           <button onClick={onSave}  className="px-4 py-2 rounded-xl bg-indigo-600 text-white font-semibold text-sm hover:bg-indigo-700 flex items-center gap-1.5"><Check size={15} /> Save</button>
@@ -54,10 +56,254 @@ function Modal({ title, onClose, onSave, children }) {
 // shared input/textarea/select classes
 const inp = "w-full px-3 py-2 rounded-xl border border-slate-200 text-sm text-slate-800 focus:outline-none focus:border-indigo-400 bg-slate-50";
 
+// ─── shared action button ──────────────────────────────────────────────────
+function ActionBtn({ icon, onClick, danger }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`p-2 rounded-lg border transition-colors ${
+        danger
+          ? "border-slate-200 text-slate-400 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+          : "border-slate-200 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200"
+      }`}
+    >
+      {icon}
+    </button>
+  );
+}
+
+// ─── star rating display ──────────────────────────────────────────────────
+function StarRating({ rating }) {
+  return (
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map(s => (
+        <Star
+          key={s}
+          size={12}
+          className={s <= rating ? "text-amber-400 fill-amber-400" : "text-slate-200 fill-slate-200"}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ─── TESTIMONIALS PANEL ───────────────────────────────────────────────────
+function TestimonialsPanel() {
+  const [items,  setItems]  = useState([]);
+  const [modal,  setModal]  = useState(null); // null | 'add' | 'edit'
+  const [editId, setEditId] = useState(null);
+  const [form,   setForm]   = useState({
+    name: "", role: "", company: "", text: "",
+    avatarUrl: "", rating: 5, order: 0, isActive: true,
+  });
+
+  const load = () => get("/testimonials?all=true").then(setItems);
+  useEffect(() => { load(); }, []);
+
+  const openAdd = () => {
+    setForm({ name: "", role: "", company: "", text: "", avatarUrl: "", rating: 5, order: 0, isActive: true });
+    setEditId(null);
+    setModal("add");
+  };
+
+  const openEdit = (t) => {
+    setForm({
+      name: t.name, role: t.role, company: t.company || "",
+      text: t.text, avatarUrl: t.avatarUrl || "",
+      rating: t.rating, order: t.order ?? 0, isActive: t.isActive,
+    });
+    setEditId(t._id);
+    setModal("edit");
+  };
+
+  const save = async () => {
+    const body = { ...form, rating: Number(form.rating), order: Number(form.order) };
+    if (editId) await put(`/testimonials/${editId}`, body);
+    else        await post("/testimonials", body);
+    setModal(null);
+    load();
+  };
+
+  const remove = async (id) => { await del(`/testimonials/${id}`); load(); };
+  const toggle = async (t)  => { await put(`/testimonials/${t._id}`, { isActive: !t.isActive }); load(); };
+
+  const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
+  const fCheck = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.checked }));
+
+  // initials avatar fallback
+  const initials = (name) => name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+
+  return (
+    <>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="p-5 border-b border-slate-100 flex justify-between items-center">
+          <h3 className="font-bold text-slate-800">Client Testimonials</h3>
+          <button
+            onClick={openAdd}
+            className="flex items-center gap-1.5 bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-indigo-700"
+          >
+            <Plus size={15} /> Add Testimonial
+          </button>
+        </div>
+
+        <table className="w-full text-left text-sm">
+          <thead className="bg-slate-50/50 text-slate-400 text-xs uppercase tracking-wider">
+            <tr>
+              <th className="px-5 py-3">Client</th>
+              <th className="px-5 py-3">Quote</th>
+              <th className="px-5 py-3">Rating</th>
+              <th className="px-5 py-3">Order</th>
+              <th className="px-5 py-3">Status</th>
+              <th className="px-5 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {items.length === 0 && (
+              <tr>
+                <td colSpan={6} className="px-5 py-10 text-center text-slate-400 text-sm">
+                  No testimonials yet. Click "Add Testimonial" to get started.
+                </td>
+              </tr>
+            )}
+            {items.map(t => (
+              <tr key={t._id} className="hover:bg-slate-50 transition-colors">
+                {/* Client */}
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-3">
+                    {t.avatarUrl ? (
+                      <img src={t.avatarUrl} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600">
+                        {initials(t.name || "?")}
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-semibold text-slate-700 leading-none">{t.name}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">{t.role}{t.company ? `, ${t.company}` : ""}</p>
+                    </div>
+                  </div>
+                </td>
+
+                {/* Quote */}
+                <td className="px-5 py-4 max-w-xs">
+                  <div className="flex gap-1.5">
+                    <Quote size={12} className="text-indigo-300 flex-shrink-0 mt-0.5" />
+                    <p className="text-xs text-slate-500 line-clamp-2">{t.text}</p>
+                  </div>
+                </td>
+
+                {/* Rating */}
+                <td className="px-5 py-4">
+                  <StarRating rating={t.rating} />
+                </td>
+
+                {/* Display order */}
+                <td className="px-5 py-4 text-slate-500 text-xs font-mono">{t.order ?? 0}</td>
+
+                {/* Status toggle */}
+                <td className="px-5 py-4">
+                  <button onClick={() => toggle(t)}>
+                    <Badge text={t.isActive ? "Active" : "Hidden"} color={t.isActive ? "green" : "amber"} />
+                  </button>
+                </td>
+
+                {/* Actions */}
+                <td className="px-5 py-4">
+                  <div className="flex justify-end gap-1.5">
+                    <ActionBtn icon={<Edit3 size={15} />} onClick={() => openEdit(t)} />
+                    <ActionBtn icon={<Trash2 size={15} />} danger onClick={() => remove(t._id)} />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ── Add / Edit Modal ── */}
+      {modal && (
+        <Modal
+          title={modal === "edit" ? "Edit Testimonial" : "Add Testimonial"}
+          onClose={() => setModal(null)}
+          onSave={save}
+        >
+          {/* Name */}
+          <div>
+            <label className="label-sm block text-xs font-semibold text-slate-500 mb-1">Client Name *</label>
+            <input className={inp} value={form.name} onChange={f("name")} placeholder="John Smith" />
+          </div>
+
+          {/* Role + Company */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label-sm block text-xs font-semibold text-slate-500 mb-1">Role / Title *</label>
+              <input className={inp} value={form.role} onChange={f("role")} placeholder="Marketing Director" />
+            </div>
+            <div>
+              <label className="label-sm block text-xs font-semibold text-slate-500 mb-1">Company (optional)</label>
+              <input className={inp} value={form.company} onChange={f("company")} placeholder="Acme Corp" />
+            </div>
+          </div>
+
+          {/* Quote text */}
+          <div>
+            <label className="label-sm block text-xs font-semibold text-slate-500 mb-1">Testimonial Text *</label>
+            <textarea
+              className={inp}
+              rows={4}
+              value={form.text}
+              onChange={f("text")}
+              placeholder="Webtech helped us grow our business online…"
+            />
+          </div>
+
+          {/* Avatar URL */}
+          <div>
+            <label className="label-sm block text-xs font-semibold text-slate-500 mb-1">Avatar Image URL (optional)</label>
+            <input className={inp} value={form.avatarUrl} onChange={f("avatarUrl")} placeholder="https://…" />
+            <p className="text-[10px] text-slate-400 mt-1">Leave blank to show initials avatar.</p>
+          </div>
+
+          {/* Rating + Order */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="label-sm block text-xs font-semibold text-slate-500 mb-1">Star Rating (1–5)</label>
+              <select className={inp} value={form.rating} onChange={f("rating")}>
+                {[5, 4, 3, 2, 1].map(n => (
+                  <option key={n} value={n}>{"★".repeat(n)}{"☆".repeat(5 - n)} ({n})</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label-sm block text-xs font-semibold text-slate-500 mb-1">Display Order</label>
+              <input type="number" className={inp} value={form.order} onChange={f("order")} placeholder="0" min={0} />
+              <p className="text-[10px] text-slate-400 mt-1">Lower = shown first.</p>
+            </div>
+          </div>
+
+          {/* Active toggle */}
+          <div className="flex items-center gap-3 pt-1">
+            <input
+              id="t-active"
+              type="checkbox"
+              checked={form.isActive}
+              onChange={fCheck("isActive")}
+              className="w-4 h-4 accent-indigo-600"
+            />
+            <label htmlFor="t-active" className="text-sm text-slate-600 cursor-pointer">
+              Show on website (Active)
+            </label>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+}
+
 // ─── FAQ PANEL ────────────────────────────────────────────────────────────
 function FAQPanel() {
   const [faqs, setFaqs]   = useState([]);
-  const [modal, setModal] = useState(null); // null | 'add' | 'edit'
+  const [modal, setModal] = useState(null);
   const [form, setForm]   = useState({ question:"", answer:"", category:"general" });
   const [editId, setEditId] = useState(null);
 
@@ -222,125 +468,64 @@ function PackagesPanel() {
   const [pkgs, setPkgs]   = useState([]);
   const [modal, setModal] = useState(null);
   const [form, setForm]   = useState({
-    title: "",
-    price: "",
-    billingCycle: "monthly",
-    suffix: "",
-    description: "",
-    features: "",
-    featured: false,
-    badge: "",
+    title: "", price: "", billingCycle: "monthly",
+    suffix: "", description: "", features: "", featured: false, badge: "",
   });
   const [editId, setEditId] = useState(null);
- 
+
   const load = () => get("/packages?all=true").then(setPkgs);
   useEffect(() => { load(); }, []);
- 
+
   const openAdd = () => {
-    setForm({
-      title: "",
-      price: "",
-      billingCycle: "monthly",
-      suffix: "",
-      description: "",
-      features: "",
-      featured: false,
-      badge: "",
-    });
-    setEditId(null);
-    setModal("add");
+    setForm({ title:"", price:"", billingCycle:"monthly", suffix:"", description:"", features:"", featured:false, badge:"" });
+    setEditId(null); setModal("add");
   };
- 
+
   const openEdit = (p) => {
-    setForm({
-      title: p.title,
-      price: p.price,
-      billingCycle: p.billingCycle,
-      suffix: p.suffix || "",
-      description: p.description || "",
-      features: p.features.join(", "),
-      featured: p.featured || false,
-      badge: p.badge || "",
-    });
-    setEditId(p._id);
-    setModal("edit");
+    setForm({ title:p.title, price:p.price, billingCycle:p.billingCycle, suffix:p.suffix||"", description:p.description||"", features:p.features.join(", "), featured:p.featured||false, badge:p.badge||"" });
+    setEditId(p._id); setModal("edit");
   };
- 
+
   const save = async () => {
-    const body = {
-      ...form,
-      price: Number(form.price),
-      features: form.features.split(",").map(s => s.trim()).filter(Boolean),
-      featured: Boolean(form.featured),
-    };
+    const body = { ...form, price: Number(form.price), features: form.features.split(",").map(s => s.trim()).filter(Boolean), featured: Boolean(form.featured) };
     if (editId) await put(`/packages/${editId}`, body);
     else        await post("/packages", body);
-    setModal(null);
-    load();
+    setModal(null); load();
   };
- 
+
   const remove = async (id) => { await del(`/packages/${id}`); load(); };
   const toggle = async (p)  => { await put(`/packages/${p._id}`, { isActive: !p.isActive }); load(); };
- 
+
   return (
     <>
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-5 border-b border-slate-100 flex justify-between items-center">
           <h3 className="font-bold text-slate-800">Pricing Packages</h3>
-          <button
-            onClick={openAdd}
-            className="flex items-center gap-1.5 bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-indigo-700"
-          >
+          <button onClick={openAdd} className="flex items-center gap-1.5 bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-indigo-700">
             <Plus size={15} /> Add Package
           </button>
         </div>
- 
         <table className="w-full text-left text-sm">
           <thead className="bg-slate-50/50 text-slate-400 text-xs uppercase tracking-wider">
             <tr>
-              <th className="px-5 py-3">Package</th>
-              <th className="px-5 py-3">Price</th>
-              <th className="px-5 py-3">Suffix</th>
-              <th className="px-5 py-3">Billing</th>
-              <th className="px-5 py-3">Featured</th>
-              <th className="px-5 py-3">Features</th>
-              <th className="px-5 py-3">Status</th>
-              <th className="px-5 py-3 text-right">Actions</th>
+              <th className="px-5 py-3">Package</th><th className="px-5 py-3">Price</th>
+              <th className="px-5 py-3">Billing</th><th className="px-5 py-3">Featured</th>
+              <th className="px-5 py-3">Status</th><th className="px-5 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {pkgs.map(p => (
               <tr key={p._id} className="hover:bg-slate-50 transition-colors">
                 <td className="px-5 py-4">
-                  <p className="font-semibold text-slate-700">
-                    {p.title}{" "}
-                    {p.badge && <Badge text={p.badge} color="red" />}
-                  </p>
+                  <p className="font-semibold text-slate-700">{p.title} {p.badge && <Badge text={p.badge} color="red" />}</p>
                   <p className="text-xs text-slate-400 mt-0.5">{p.description}</p>
                 </td>
-                <td className="px-5 py-4 font-bold text-slate-700">
-                  ₹{p.price.toLocaleString("en-IN")}
-                </td>
-                <td className="px-5 py-4 text-slate-500 text-xs">
-                  {p.suffix || <span className="text-slate-300">—</span>}
-                </td>
-                <td className="px-5 py-4">
-                  <Badge text={p.billingCycle} color="blue" />
-                </td>
-                <td className="px-5 py-4">
-                  {p.featured
-                    ? <Badge text="Popular" color="amber" />
-                    : <span className="text-slate-300 text-xs">—</span>}
-                </td>
-                <td className="px-5 py-4 text-xs text-slate-500">
-                  {p.features.slice(0, 2).join(", ")}{p.features.length > 2 ? "…" : ""}
-                </td>
+                <td className="px-5 py-4 font-bold text-slate-700">₹{p.price.toLocaleString("en-IN")}</td>
+                <td className="px-5 py-4"><Badge text={p.billingCycle} color="blue" /></td>
+                <td className="px-5 py-4">{p.featured ? <Badge text="Popular" color="amber" /> : <span className="text-slate-300 text-xs">—</span>}</td>
                 <td className="px-5 py-4">
                   <button onClick={() => toggle(p)}>
-                    <Badge
-                      text={p.isActive ? "Active" : "Hidden"}
-                      color={p.isActive ? "green" : "amber"}
-                    />
+                    <Badge text={p.isActive ? "Active" : "Hidden"} color={p.isActive ? "green" : "amber"} />
                   </button>
                 </td>
                 <td className="px-5 py-4">
@@ -354,107 +539,25 @@ function PackagesPanel() {
           </tbody>
         </table>
       </div>
- 
       {modal && (
-        <Modal
-          title={modal === "edit" ? "Edit Package" : "Add Package"}
-          onClose={() => setModal(null)}
-          onSave={save}
-        >
-          {/* Title */}
-          <div>
-            <label className="label-sm">Title</label>
-            <input
-              className={inp}
-              value={form.title}
-              onChange={e => setForm({ ...form, title: e.target.value })}
-              placeholder="Social Media Management"
-            />
-          </div>
- 
-          {/* Price + Billing Cycle */}
+        <Modal title={modal === "edit" ? "Edit Package" : "Add Package"} onClose={() => setModal(null)} onSave={save}>
+          <div><label className="label-sm">Title</label><input className={inp} value={form.title} onChange={e => setForm({...form, title:e.target.value})} placeholder="Social Media Management" /></div>
           <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="label-sm">Price (₹)</label>
-              <input
-                className={inp}
-                type="number"
-                value={form.price}
-                onChange={e => setForm({ ...form, price: e.target.value })}
-                placeholder="4000"
-              />
-            </div>
-            <div>
-              <label className="label-sm">Billing Cycle</label>
-              <select
-                className={inp}
-                value={form.billingCycle}
-                onChange={e => setForm({ ...form, billingCycle: e.target.value })}
-              >
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-                <option value="one-time">One-time</option>
+            <div><label className="label-sm">Price (₹)</label><input className={inp} type="number" value={form.price} onChange={e => setForm({...form, price:e.target.value})} placeholder="4000" /></div>
+            <div><label className="label-sm">Billing Cycle</label>
+              <select className={inp} value={form.billingCycle} onChange={e => setForm({...form, billingCycle:e.target.value})}>
+                <option value="monthly">Monthly</option><option value="yearly">Yearly</option><option value="one-time">One-time</option>
               </select>
             </div>
           </div>
- 
-          {/* Suffix — shown after price on the card */}
-          <div>
-            <label className="label-sm">Price Suffix (e.g. "/ month" or leave blank for "/-")</label>
-            <input
-              className={inp}
-              value={form.suffix}
-              onChange={e => setForm({ ...form, suffix: e.target.value })}
-              placeholder="/ month"
-            />
-          </div>
- 
-          {/* Description */}
-          <div>
-            <label className="label-sm">Description</label>
-            <input
-              className={inp}
-              value={form.description}
-              onChange={e => setForm({ ...form, description: e.target.value })}
-              placeholder="We manage your social media platforms..."
-            />
-          </div>
- 
-          {/* Features */}
-          <div>
-            <label className="label-sm">Features (comma-separated)</label>
-            <input
-              className={inp}
-              value={form.features}
-              onChange={e => setForm({ ...form, features: e.target.value })}
-              placeholder="Post Creation, Monthly Calendar, 12–15 Posts"
-            />
-          </div>
- 
-          {/* Featured toggle */}
+          <div><label className="label-sm">Price Suffix</label><input className={inp} value={form.suffix} onChange={e => setForm({...form, suffix:e.target.value})} placeholder="/ month" /></div>
+          <div><label className="label-sm">Description</label><input className={inp} value={form.description} onChange={e => setForm({...form, description:e.target.value})} /></div>
+          <div><label className="label-sm">Features (comma-separated)</label><input className={inp} value={form.features} onChange={e => setForm({...form, features:e.target.value})} /></div>
           <div className="flex items-center gap-3">
-            <input
-              id="featured-toggle"
-              type="checkbox"
-              className="checkbox checkbox-sm"
-              checked={form.featured}
-              onChange={e => setForm({ ...form, featured: e.target.checked })}
-            />
-            <label htmlFor="featured-toggle" className="label-sm cursor-pointer">
-              Mark as <span className="text-amber-500 font-bold">Popular</span> (shows orange "Popular" badge on card)
-            </label>
+            <input id="featured-toggle" type="checkbox" className="w-4 h-4 accent-indigo-600" checked={form.featured} onChange={e => setForm({...form, featured:e.target.checked})} />
+            <label htmlFor="featured-toggle" className="text-sm text-slate-600 cursor-pointer">Mark as <span className="text-amber-500 font-bold">Popular</span></label>
           </div>
- 
-          {/* Optional badge label */}
-          <div>
-            <label className="label-sm">Extra Badge Label (optional, e.g. HOT)</label>
-            <input
-              className={inp}
-              value={form.badge}
-              onChange={e => setForm({ ...form, badge: e.target.value })}
-              placeholder="HOT"
-            />
-          </div>
+          <div><label className="label-sm">Extra Badge Label (optional)</label><input className={inp} value={form.badge} onChange={e => setForm({...form, badge:e.target.value})} placeholder="HOT" /></div>
         </Modal>
       )}
     </>
@@ -464,18 +567,13 @@ function PackagesPanel() {
 // ─── CONTACTS PANEL ───────────────────────────────────────────────────────
 function ContactsPanel() {
   const [contacts, setContacts] = useState([]);
-  const [viewing, setViewing]   = useState(null);
+  const [viewing,  setViewing]  = useState(null);
 
   const load = () => get("/contact").then(setContacts);
   useEffect(() => { load(); }, []);
 
-  const remove = async (id) => { await del(`/contact/${id}`); load(); };
-  const updateStatus = async (id, status) => {
-    await patch(`/contact/${id}/status`, { status });
-    load();
-  };
-
-  const statusColor = { new:"red", seen:"amber", replied:"green" };
+  const remove       = async (id)          => { await del(`/contact/${id}`); load(); };
+  const updateStatus = async (id, status)  => { await patch(`/contact/${id}/status`, { status }); load(); };
 
   return (
     <>
@@ -487,35 +585,21 @@ function ContactsPanel() {
         <table className="w-full text-left text-sm">
           <thead className="bg-slate-50/50 text-slate-400 text-xs uppercase tracking-wider">
             <tr>
-              <th className="px-5 py-3">Name</th>
-              <th className="px-5 py-3">Email</th>
-              <th className="px-5 py-3">Service</th>
-              <th className="px-5 py-3">Message</th>
-              <th className="px-5 py-3">Status</th>
-              <th className="px-5 py-3 text-right">Actions</th>
+              <th className="px-5 py-3">Name</th><th className="px-5 py-3">Email</th>
+              <th className="px-5 py-3">Service</th><th className="px-5 py-3">Message</th>
+              <th className="px-5 py-3">Status</th><th className="px-5 py-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {contacts.map(c => (
               <tr key={c._id} className={`hover:bg-slate-50 transition-colors ${c.status === "new" ? "bg-indigo-50/30" : ""}`}>
-                <td className="px-5 py-4">
-                  <p className="font-semibold text-slate-700">{c.fullName}</p>
-                  <p className="text-xs text-slate-400">{c.phone || "—"}</p>
-                </td>
+                <td className="px-5 py-4"><p className="font-semibold text-slate-700">{c.fullName}</p><p className="text-xs text-slate-400">{c.phone || "—"}</p></td>
                 <td className="px-5 py-4 text-slate-500">{c.email}</td>
                 <td className="px-5 py-4">{c.subject ? <Badge text={c.subject} color="blue" /> : "—"}</td>
-                <td className="px-5 py-4 max-w-xs">
-                  <p className="text-xs text-slate-500 truncate">{c.message}</p>
-                </td>
+                <td className="px-5 py-4 max-w-xs"><p className="text-xs text-slate-500 truncate">{c.message}</p></td>
                 <td className="px-5 py-4">
-                  <select
-                    value={c.status}
-                    onChange={e => updateStatus(c._id, e.target.value)}
-                    className="text-xs px-2 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:border-indigo-400"
-                  >
-                    <option value="new">New</option>
-                    <option value="seen">Seen</option>
-                    <option value="replied">Replied</option>
+                  <select value={c.status} onChange={e => updateStatus(c._id, e.target.value)} className="text-xs px-2 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:border-indigo-400">
+                    <option value="new">New</option><option value="seen">Seen</option><option value="replied">Replied</option>
                   </select>
                 </td>
                 <td className="px-5 py-4">
@@ -529,7 +613,6 @@ function ContactsPanel() {
           </tbody>
         </table>
       </div>
-
       {viewing && (
         <Modal title={`Message from ${viewing.fullName}`} onClose={() => setViewing(null)} onSave={() => { updateStatus(viewing._id, "replied"); setViewing(null); }}>
           <div className="text-xs text-slate-500 flex gap-3 flex-wrap">
@@ -537,9 +620,7 @@ function ContactsPanel() {
             {viewing.phone && <span>{viewing.phone}</span>}
             {viewing.subject && <Badge text={viewing.subject} color="blue" />}
           </div>
-          <div className="bg-slate-50 rounded-xl p-4 text-sm text-slate-700 leading-relaxed border border-slate-100">
-            {viewing.message}
-          </div>
+          <div className="bg-slate-50 rounded-xl p-4 text-sm text-slate-700 leading-relaxed border border-slate-100">{viewing.message}</div>
           <p className="text-xs text-slate-400 text-center">Clicking Save will mark this as Replied.</p>
         </Modal>
       )}
@@ -547,33 +628,15 @@ function ContactsPanel() {
   );
 }
 
-// ─── shared action button ──────────────────────────────────────────────────
-function ActionBtn({ icon, onClick, danger }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`p-2 rounded-lg border transition-colors ${
-        danger
-          ? "border-slate-200 text-slate-400 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-          : "border-slate-200 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 hover:border-indigo-200"
-      }`}
-    >
-      {icon}
-    </button>
-  );
-}
-
 // ─── OVERVIEW STAT CARD ───────────────────────────────────────────────────
 function StatCard({ label, value, sub, icon, color }) {
   const colors = {
-    indigo: "text-indigo-600", blue: "text-blue-600",
-    purple: "text-purple-600", green: "text-green-600",
+    indigo:"text-indigo-600", blue:"text-blue-600",
+    purple:"text-purple-600", green:"text-green-600",
   };
   return (
     <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden group">
-      <div className={`absolute top-3 right-3 opacity-10 group-hover:opacity-20 transition-opacity ${colors[color]}`}>
-        {icon}
-      </div>
+      <div className={`absolute top-3 right-3 opacity-10 group-hover:opacity-20 transition-opacity ${colors[color]}`}>{icon}</div>
       <p className="text-slate-500 text-sm font-medium">{label}</p>
       <p className="text-3xl font-bold mt-1 text-slate-800">{value}</p>
       <p className="text-xs text-slate-400 mt-2">{sub}</p>
@@ -589,18 +652,19 @@ function Dashboard() {
   const logout = () => { localStorage.removeItem("token"); navigate("/"); };
 
   const nav = [
-    { id:"overview",  label:"Dashboard",    icon:<LayoutDashboard size={18} /> },
-    { id:"faqs",      label:"FAQs",         icon:<HelpCircle size={18} /> },
-    { id:"clients",   label:"Clients",      icon:<Users size={18} /> },
-    { id:"packages",  label:"Packages",     icon:<Package size={18} /> },
-    { id:"contacts",  label:"Contacts",     icon:<Mail size={18} /> },
-    { id:"pages",     label:"My Pages",     icon:<FileText size={18} /> },
-    { id:"analytics", label:"Analytics",    icon:<BarChart3 size={18} /> },
+    { id:"overview",      label:"Dashboard",      icon:<LayoutDashboard size={18} /> },
+    { id:"faqs",          label:"FAQs",           icon:<HelpCircle size={18} /> },
+    { id:"clients",       label:"Clients",        icon:<Users size={18} /> },
+    { id:"packages",      label:"Packages",       icon:<Package size={18} /> },
+    { id:"testimonials",  label:"Testimonials",   icon:<Quote size={18} /> },
+    { id:"contacts",      label:"Contacts",       icon:<Mail size={18} /> },
+    { id:"pages",         label:"My Pages",       icon:<FileText size={18} /> },
+    { id:"analytics",     label:"Analytics",      icon:<BarChart3 size={18} /> },
   ];
 
   const pages = [
-    { name: "Gym Landing Page",     url: "/page/gym",        date: "12 Apr 2026", status: "Published" },
-    { name: "Marketing Campaign",   url: "/page/marketing",  date: "10 Apr 2026", status: "Draft" },
+    { name:"Gym Landing Page",   url:"/page/gym",       date:"12 Apr 2026", status:"Published" },
+    { name:"Marketing Campaign", url:"/page/marketing", date:"10 Apr 2026", status:"Draft" },
   ];
 
   return (
@@ -613,7 +677,7 @@ function Dashboard() {
           <h1 className="text-xl font-bold tracking-tight text-slate-800">WebTech</h1>
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-1">
+        <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
           {nav.map(n => (
             <button
               key={n.id}
@@ -625,7 +689,9 @@ function Dashboard() {
               }`}
             >
               {n.icon} {n.label}
-              {n.id === "contacts" && <span className="ml-auto w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">2</span>}
+              {n.id === "contacts" && (
+                <span className="ml-auto w-5 h-5 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center font-bold">2</span>
+              )}
             </button>
           ))}
         </nav>
@@ -642,18 +708,18 @@ function Dashboard() {
 
       {/* ── Main ── */}
       <div className="flex-1 flex flex-col overflow-hidden">
-
         <header className="bg-white border-b border-slate-200 flex justify-between items-center px-8 py-4 flex-shrink-0">
           <div>
             <h2 className="text-xl font-bold text-slate-800 capitalize">{tab === "overview" ? "Overview" : tab}</h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              {tab === "overview" && "Welcome back — here's what's happening."}
-              {tab === "faqs"     && "Manage homepage FAQ section."}
-              {tab === "clients"  && "Add and manage client logos on the homepage."}
-              {tab === "packages" && "Control pricing plans shown on the homepage."}
-              {tab === "contacts" && "View and respond to messages from users."}
-              {tab === "pages"    && "Your published landing pages."}
-              {tab === "analytics"&& "Site performance overview."}
+              {tab === "overview"     && "Welcome back — here's what's happening."}
+              {tab === "faqs"         && "Manage homepage FAQ section."}
+              {tab === "clients"      && "Add and manage client logos on the homepage."}
+              {tab === "packages"     && "Control pricing plans shown on the homepage."}
+              {tab === "testimonials" && "Manage client testimonials shown on the homepage."}
+              {tab === "contacts"     && "View and respond to messages from users."}
+              {tab === "pages"        && "Your published landing pages."}
+              {tab === "analytics"    && "Site performance overview."}
             </p>
           </div>
         </header>
@@ -664,10 +730,10 @@ function Dashboard() {
           {tab === "overview" && (
             <>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <StatCard label="Total Pages"   value="12"    sub="+2 from last month"   icon={<FileText size={48} />}   color="indigo" />
-                <StatCard label="Total Views"   value="3,240" sub="+12.5% increase"       icon={<BarChart3 size={48} />}  color="blue"   />
-                <StatCard label="Conversions"   value="320"   sub="Avg. 9.8% rate"        icon={<Package size={48} />}    color="purple" />
-                <StatCard label="New Messages"  value="2"     sub="Unread contact forms"  icon={<Mail size={48} />}       color="green"  />
+                <StatCard label="Total Pages"  value="12"    sub="+2 from last month"  icon={<FileText size={48} />}  color="indigo" />
+                <StatCard label="Total Views"  value="3,240" sub="+12.5% increase"     icon={<BarChart3 size={48} />} color="blue"   />
+                <StatCard label="Conversions"  value="320"   sub="Avg. 9.8% rate"      icon={<Package size={48} />}   color="purple" />
+                <StatCard label="New Messages" value="2"     sub="Unread contact forms" icon={<Mail size={48} />}     color="green"  />
               </div>
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center">
@@ -692,10 +758,11 @@ function Dashboard() {
             </>
           )}
 
-          {tab === "faqs"      && <FAQPanel />}
-          {tab === "clients"   && <ClientsPanel />}
-          {tab === "packages"  && <PackagesPanel />}
-          {tab === "contacts"  && <ContactsPanel />}
+          {tab === "faqs"         && <FAQPanel />}
+          {tab === "clients"      && <ClientsPanel />}
+          {tab === "packages"     && <PackagesPanel />}
+          {tab === "testimonials" && <TestimonialsPanel />}
+          {tab === "contacts"     && <ContactsPanel />}
 
           {tab === "pages" && (
             <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

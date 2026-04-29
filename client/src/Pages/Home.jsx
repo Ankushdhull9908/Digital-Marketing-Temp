@@ -168,69 +168,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── OUR PACKAGES ─────────────────────────────────────────────────── */}
-      {!loading && packages.length > 0 && (
-        <section className="py-24 px-6 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} className="text-center mb-16">
-              <h2 className="text-[#F39221] font-black uppercase tracking-[0.3em] text-sm mb-4">Pricing Plans</h2>
-              <h3 className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Our Packages</h3>
-              <p className="text-slate-500 mt-4 max-w-xl mx-auto font-medium">Transparent pricing built for every stage of your business growth.</p>
-            </motion.div>
-
-            <motion.div
-              initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
-              variants={staggerContainer}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {packages.map((pkg) => (
-                <motion.div
-                  key={pkg._id}
-                  variants={fadeInUp}
-                  whileHover={{ y: -8 }}
-                  className="relative flex flex-col p-8 rounded-[2rem] border border-slate-100 bg-[#F8FAFB] hover:shadow-2xl transition-all duration-500"
-                >
-                  {/* Badge */}
-                  {pkg.badge && (
-                    <span className="absolute top-5 right-5 bg-[#F39221] text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wide">
-                      {pkg.badge}
-                    </span>
-                  )}
-
-                  <h4 className="text-xl font-extrabold text-slate-800 mb-1">{pkg.title}</h4>
-                  <p className="text-slate-500 text-sm mb-6 font-medium">{pkg.description}</p>
-
-                  <div className="flex items-end gap-1 mb-2">
-                    <span className="text-4xl font-black text-slate-900">₹{Number(pkg.price).toLocaleString("en-IN")}</span>
-                    <span className="text-slate-400 text-sm font-medium mb-1">/ {pkg.billingCycle}</span>
-                  </div>
-
-                  <div className="w-full h-px bg-slate-200 my-6" />
-
-                  <ul className="space-y-3 flex-1 mb-8">
-                    {pkg.features.map((f, i) => (
-                      <li key={i} className="flex items-center gap-3 text-sm text-slate-600 font-medium">
-                        <div className="w-5 h-5 rounded-full bg-[#3D7E8C]/10 flex items-center justify-center flex-shrink-0">
-                          <Check size={12} className="text-[#3D7E8C]" strokeWidth={3} />
-                        </div>
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    to="/contact"
-                    className="w-full text-center py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-[#3D7E8C] transition-colors duration-300"
-                  >
-                    Get Started
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
-          </div>
-        </section>
-      )}
-
+      
       {/* ── CLIENTS ──────────────────────────────────────────────────────── */}
       {!loading && clients.length > 0 && (
         <section className="py-20 px-6">
