@@ -16,6 +16,7 @@ import SipCalculator from './Pages/SipCalculator'
 import Footer from './Components/Footer'
 import OurServices from './Pages/OurServices'
 import WhySEO from './Pages/WhySEO'
+import ScrollToTop from './Components/ScrollToTop'
 import Contact from './Pages/Contact'
 
 
@@ -26,6 +27,7 @@ function App() {
   return (
     <>
     <Navbar />
+    <ScrollToTop/>
       <Routes>
         <Route path="/" element={<Home/>} /> 
         <Route path="/auth" element={<AuthPage />} />

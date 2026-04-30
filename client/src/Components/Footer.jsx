@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { 
   FaFacebookF, 
   FaTwitter, 
@@ -13,16 +14,16 @@ const Footer = () => {
 
   const footerLinks = {
     quickLinks: [
-      { name: 'Home', href: '/' },
-      { name: 'About', href: '/about' },
-      { name: 'Contact', href: '/contact' },
-      { name: 'Our Service', href: '/OurServices' },
+      { name: 'Home', to: '/' },
+      { name: 'About', to: '/about' },
+      { name: 'Contact', to: '/contact' },
+      { name: 'Our Service', to: '/OurServices' },
     ],
     importantLinks: [
-      { name: 'Privacy Policy', href: '#' },
-      { name: 'Terms & Conditions', href: '#' },
-      { name: 'Career', href: '#' },
-      { name: 'Why SEO', href: '/WhySEO' },
+      { name: 'Privacy Policy', to: '/privacy-policy' },
+      { name: 'Terms & Conditions', to: '/terms-and-conditions' },
+      { name: 'Career', to: '/career' },
+      { name: 'Why SEO', to: '/WhySEO' },
     ],
     contactInfo: {
       phone: '+91 99999-99999',
@@ -31,12 +32,13 @@ const Footer = () => {
     }
   };
 
+  // Social links that go to external URLs — using <a> with target="_blank" is correct here
   const socialLinks = [
-    { icon: <FaFacebookF />, href: '#' },
-    { icon: <FaTwitter />, href: '#' },
-    { icon: <FaLinkedinIn />, href: '#' },
-    { icon: <FaInstagram />, href: '#' },
-    { icon: <FaGithub />, href: '#' },
+    { icon: <FaFacebookF />, href: 'https://facebook.com' },
+    { icon: <FaTwitter />, href: 'https://twitter.com' },
+    { icon: <FaLinkedinIn />, href: 'https://linkedin.com' },
+    { icon: <FaInstagram />, href: 'https://instagram.com' },
+    { icon: <FaGithub />, href: 'https://github.com' },
   ];
 
   return (
@@ -54,14 +56,16 @@ const Footer = () => {
             transition={{ duration: 0.5 }}
             className="space-y-4"
           >
-            <div className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl"><img src='/logos/logo.png'/></span>
+                <span className="text-white font-bold text-xl">
+                  <img src='/logos/logo.png' alt="Logo" />
+                </span>
               </div>
               <span className="text-2xl font-bold text-gray-900 tracking-tight">
                 WEB<span className="text-blue-600">Techie</span>
               </span>
-            </div>
+            </Link>
             <p className="text-gray-500 leading-relaxed max-w-xs">
               Providing premium digital solutions with a focus on UI/UX excellence and cutting-edge technology.
             </p>
@@ -77,9 +81,12 @@ const Footer = () => {
             <ul className="space-y-4">
               {footerLinks.quickLinks.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-gray-600 hover:text-blue-600 transition-colors duration-300">
+                  <Link
+                    to={link.to}
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-300"
+                  >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -95,9 +102,12 @@ const Footer = () => {
             <ul className="space-y-4">
               {footerLinks.importantLinks.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-gray-600 hover:text-blue-600 transition-colors duration-300">
+                  <Link
+                    to={link.to}
+                    className="text-gray-600 hover:text-blue-600 transition-colors duration-300"
+                  >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -140,6 +150,8 @@ const Footer = () => {
               <motion.a
                 key={index}
                 href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 whileHover={{ scale: 1.1, backgroundColor: '#2563eb', color: '#ffffff' }}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-all duration-300 shadow-sm"
               >
