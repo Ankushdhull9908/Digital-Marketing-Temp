@@ -16,9 +16,9 @@ const Contact = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null); // null | true | false
 
-  var API = "https://digital-marketing-temp.onrender.com/api"
-  ? "https://digital-marketing-temp.onrender.com/api"
-  : "http://localhost:5000/api";
+  var API = "https://digital-marketing-temp.onrender.com/api/contact"
+  ? "https://digital-marketing-temp.onrender.com/api/contact"
+  : "http://localhost:5000/api/contact";
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
