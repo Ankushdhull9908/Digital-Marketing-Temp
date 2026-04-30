@@ -30,7 +30,7 @@ export const ContextProvider = ({ children }) => {
           get("/faqs"),          // only active FAQs (no ?all=true)
           get("/packages"),      // only active packages
           get("/clients"),
-          get('/testimonials')      // only active clients
+          get("/testimonials")      // only active clients
         ]);
         setFaqs(Array.isArray(faqData)     ? faqData     : []);
         setPackages(Array.isArray(pkgData) ? pkgData     : []);

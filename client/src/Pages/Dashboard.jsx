@@ -463,6 +463,375 @@ function ClientsPanel() {
   );
 }
 
+/**
+ * Dashboard Job Panels — paste these into your existing Dashboard.jsx
+ *
+ * 1. MyApplicationsPanel  — shown to applicants ("My Applications" tab)
+ * 2. RecruiterJobsPanel   — shown to recruiters ("My Posted Jobs" tab)
+ *                           Includes viewing applications per job + status updates
+ *
+ * Uses the same helper functions (get, post, put, del, patch) and
+ * shared components (Badge, Modal, ActionBtn, inp) already in your Dashboard.jsx.
+ */
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MY APPLICATIONS PANEL  (applicant view)
+// ─────────────────────────────────────────────────────────────────────────────
+export function MyApplicationsPanel() {
+  const [apps, setApps] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const load = () =>
+    get("/jobs/user/my-applications").then((data) => {
+      setApps(Array.isArray(data) ? data : []);
+      setLoading(false);
+    });
+
+  useEffect(() => { load(); }, []);
+
+  const STATUS_COLOR = {
+    pending:     "amber",
+    reviewed:    "blue",
+    shortlisted: "green",
+    rejected:    "red",
+  };
+
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="p-5 border-b border-slate-100 flex justify-between items-center">
+        <h3 className="font-bold text-slate-800">My Job Applications</h3>
+        <span className="text-xs text-slate-400 font-medium">{apps.length} total</span>
+      </div>
+
+      {loading ? (
+        <div className="p-10 text-center text-slate-400 text-sm">Loading…</div>
+      ) : apps.length === 0 ? (
+        <div className="p-10 text-center text-slate-400 text-sm">
+          You haven't applied to any jobs yet.{" "}
+          <a href="/jobs" className="text-indigo-600 font-semibold hover:underline">Browse Jobs</a>
+        </div>
+      ) : (
+        <table className="w-full text-left text-sm">
+          <thead className="bg-slate-50/50 text-slate-400 text-xs uppercase tracking-wider">
+            <tr>
+              <th className="px-5 py-3">Job</th>
+              <th className="px-5 py-3">Company</th>
+              <th className="px-5 py-3">Applied On</th>
+              <th className="px-5 py-3">Status</th>
+              <th className="px-5 py-3">Resume</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {apps.map((app) => (
+              <tr key={app._id} className="hover:bg-slate-50 transition-colors">
+                <td className="px-5 py-4">
+                  <p className="font-semibold text-slate-700">{app.job?.title ?? "Job Removed"}</p>
+                  <p className="text-xs text-slate-400">
+                    {app.job?.location ?? ""}
+                    {app.job?.category ? ` · ${app.job.category}` : ""}
+                  </p>
+                </td>
+                <td className="px-5 py-4 text-slate-500">{app.job?.company ?? "—"}</td>
+                <td className="px-5 py-4 text-slate-500 text-xs">
+                  {new Date(app.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                </td>
+                <td className="px-5 py-4">
+                  <Badge text={app.status} color={STATUS_COLOR[app.status] ?? "slate"} />
+                </td>
+                <td className="px-5 py-4">
+                  {app.resumeUrl ? (
+                    <a href={app.resumeUrl} target="_blank" rel="noreferrer" className="text-indigo-600 text-xs font-semibold hover:underline">
+                      View ↗
+                    </a>
+                  ) : (
+                    <span className="text-slate-300 text-xs">—</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RECRUITER JOBS PANEL  (jobs I posted + applicants per job)
+// ─────────────────────────────────────────────────────────────────────────────
+export function RecruiterJobsPanel() {
+  const [jobs, setJobs]           = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [expanded, setExpanded]   = useState(null);   // job _id currently expanded
+  const [appsMap, setAppsMap]     = useState({});      // { jobId: Application[] }
+  const [appsLoading, setAppsLoading] = useState({});
+
+  const [modal, setModal]   = useState(null); // null | 'add' | 'edit'
+  const [editId, setEditId] = useState(null);
+  const [form, setForm]     = useState({
+    title: "", company: "", location: "", category: "Frontend",
+    description: "", salary: "", isActive: true,
+  });
+
+  const CATEGORIES = ["Frontend", "Backend", "Fullstack", "Design", "Marketing"];
+  const STATUS_OPTIONS = ["pending", "reviewed", "shortlisted", "rejected"];
+
+  const loadJobs = () =>
+    get("/jobs/mine").then((data) => {
+      setJobs(Array.isArray(data) ? data : []);
+      setLoading(false);
+    });
+
+  useEffect(() => { loadJobs(); }, []);
+
+  // toggle expanded row + lazy-load applications
+  const toggleExpand = async (jobId) => {
+    if (expanded === jobId) { setExpanded(null); return; }
+    setExpanded(jobId);
+    if (appsMap[jobId]) return; // already loaded
+    setAppsLoading(p => ({ ...p, [jobId]: true }));
+    const apps = await get(`/jobs/${jobId}/applications`);
+    setAppsMap(p => ({ ...p, [jobId]: Array.isArray(apps) ? apps : [] }));
+    setAppsLoading(p => ({ ...p, [jobId]: false }));
+  };
+
+  const updateAppStatus = async (jobId, appId, status) => {
+    await patch(`/jobs/applications/${appId}/status`, { status });
+    setAppsMap(p => ({
+      ...p,
+      [jobId]: p[jobId].map(a => a._id === appId ? { ...a, status } : a),
+    }));
+  };
+
+  const openAdd = () => {
+    setForm({ title: "", company: "", location: "", category: "Frontend", description: "", salary: "", isActive: true });
+    setEditId(null);
+    setModal("add");
+  };
+
+  const openEdit = (job) => {
+    setForm({
+      title: job.title, company: job.company, location: job.location || "",
+      category: job.category, description: job.description || "",
+      salary: job.salary || "", isActive: job.isActive,
+    });
+    setEditId(job._id);
+    setModal("edit");
+  };
+
+  const saveJob = async () => {
+    if (editId) await put(`/jobs/${editId}`, form);
+    else        await post("/jobs", form);
+    setModal(null);
+    loadJobs();
+  };
+
+  const deleteJob = async (id) => {
+    if (!window.confirm("Delete this job and all its applications?")) return;
+    await del(`/jobs/${id}`);
+    loadJobs();
+  };
+
+  const f = (k) => (e) => setForm(p => ({ ...p, [k]: e.target.value }));
+
+  const STATUS_COLOR = {
+    pending: "amber", reviewed: "blue", shortlisted: "green", rejected: "red",
+  };
+
+  return (
+    <>
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="p-5 border-b border-slate-100 flex justify-between items-center">
+          <h3 className="font-bold text-slate-800">My Posted Jobs</h3>
+          <button
+            onClick={openAdd}
+            className="flex items-center gap-1.5 bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-indigo-700"
+          >
+            <Plus size={15} /> Post New Job
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="p-10 text-center text-slate-400 text-sm">Loading…</div>
+        ) : jobs.length === 0 ? (
+          <div className="p-10 text-center text-slate-400 text-sm">
+            No jobs posted yet. Click "Post New Job" to get started.
+          </div>
+        ) : (
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50/50 text-slate-400 text-xs uppercase tracking-wider">
+              <tr>
+                <th className="px-5 py-3">Job</th>
+                <th className="px-5 py-3">Category</th>
+                <th className="px-5 py-3">Posted</th>
+                <th className="px-5 py-3">Status</th>
+                <th className="px-5 py-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {jobs.map((job) => (
+                <React.Fragment key={job._id}>
+                  {/* ── Job Row ── */}
+                  <tr
+                    className={`border-t border-slate-100 hover:bg-slate-50 transition-colors cursor-pointer ${
+                      expanded === job._id ? "bg-indigo-50/40" : ""
+                    }`}
+                    onClick={() => toggleExpand(job._id)}
+                  >
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-2">
+                        {expanded === job._id
+                          ? <ChevronUp size={14} className="text-indigo-500" />
+                          : <ChevronDown size={14} className="text-slate-400" />
+                        }
+                        <div>
+                          <p className="font-semibold text-slate-700">{job.title}</p>
+                          <p className="text-xs text-slate-400">{job.company} · {job.location}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-5 py-4"><Badge text={job.category} color="blue" /></td>
+                    <td className="px-5 py-4 text-xs text-slate-500">
+                      {new Date(job.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                    </td>
+                    <td className="px-5 py-4">
+                      <Badge text={job.isActive ? "Active" : "Closed"} color={job.isActive ? "green" : "amber"} />
+                    </td>
+                    <td className="px-5 py-4" onClick={e => e.stopPropagation()}>
+                      <div className="flex justify-end gap-1.5">
+                        <ActionBtn icon={<Edit3 size={15} />} onClick={() => openEdit(job)} />
+                        <ActionBtn icon={<Trash2 size={15} />} danger onClick={() => deleteJob(job._id)} />
+                      </div>
+                    </td>
+                  </tr>
+
+                  {/* ── Expanded Applications ── */}
+                  {expanded === job._id && (
+                    <tr className="border-t border-indigo-100">
+                      <td colSpan={5} className="px-0 py-0">
+                        <div className="bg-indigo-50/30 px-8 py-4">
+                          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
+                            Applications
+                          </p>
+                          {appsLoading[job._id] ? (
+                            <p className="text-sm text-slate-400">Loading applications…</p>
+                          ) : !appsMap[job._id] || appsMap[job._id].length === 0 ? (
+                            <p className="text-sm text-slate-400">No applications yet.</p>
+                          ) : (
+                            <table className="w-full text-sm bg-white rounded-xl overflow-hidden border border-slate-100">
+                              <thead>
+                                <tr className="text-slate-400 text-xs uppercase tracking-wider bg-slate-50">
+                                  <th className="px-4 py-2 text-left">Applicant</th>
+                                  <th className="px-4 py-2 text-left">Email</th>
+                                  <th className="px-4 py-2 text-left">Applied</th>
+                                  <th className="px-4 py-2 text-left">Cover Letter</th>
+                                  <th className="px-4 py-2 text-left">Resume</th>
+                                  <th className="px-4 py-2 text-left">Status</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-slate-100">
+                                {appsMap[job._id].map((app) => (
+                                  <tr key={app._id} className="hover:bg-slate-50">
+                                    <td className="px-4 py-3 font-semibold text-slate-700">
+                                      {app.applicantName || app.applicant?.name || "—"}
+                                    </td>
+                                    <td className="px-4 py-3 text-slate-500 text-xs">
+                                      {app.applicantEmail || app.applicant?.email || "—"}
+                                    </td>
+                                    <td className="px-4 py-3 text-slate-400 text-xs">
+                                      {new Date(app.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                                    </td>
+                                    <td className="px-4 py-3 max-w-xs">
+                                      <p className="text-xs text-slate-500 line-clamp-2">{app.coverLetter || "—"}</p>
+                                    </td>
+                                    <td className="px-4 py-3">
+                                      {app.resumeUrl ? (
+                                        <a href={app.resumeUrl} target="_blank" rel="noreferrer"
+                                          className="text-indigo-600 text-xs font-semibold hover:underline">
+                                          View ↗
+                                        </a>
+                                      ) : <span className="text-slate-300 text-xs">—</span>}
+                                    </td>
+                                    <td className="px-4 py-3">
+                                      <select
+                                        value={app.status}
+                                        onChange={e => updateAppStatus(job._id, app._id, e.target.value)}
+                                        className="text-xs px-2 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 focus:outline-none focus:border-indigo-400"
+                                      >
+                                        {STATUS_OPTIONS.map(s => (
+                                          <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                                        ))}
+                                      </select>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Add / Edit Job Modal */}
+      {modal && (
+        <Modal
+          title={modal === "edit" ? "Edit Job" : "Post a New Job"}
+          onClose={() => setModal(null)}
+          onSave={saveJob}
+        >
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Job Title *</label>
+              <input className={inp} value={form.title} onChange={f("title")} placeholder="Frontend Developer" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Category</label>
+              <select className={inp} value={form.category} onChange={f("category")}>
+                {["Frontend","Backend","Fullstack","Design","Marketing"].map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Company *</label>
+            <input className={inp} value={form.company} onChange={f("company")} placeholder="Tech Corp" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Location</label>
+              <input className={inp} value={form.location} onChange={f("location")} placeholder="Remote / Delhi" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Salary</label>
+              <input className={inp} value={form.salary} onChange={f("salary")} placeholder="₹5–8 LPA" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Description</label>
+            <textarea className={inp} rows={4} value={form.description} onChange={f("description")} />
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              id="job-active" type="checkbox" className="w-4 h-4 accent-indigo-600"
+              checked={form.isActive}
+              onChange={e => setForm(p => ({ ...p, isActive: e.target.checked }))}
+            />
+            <label htmlFor="job-active" className="text-sm text-slate-600 cursor-pointer">Active (visible on job board)</label>
+          </div>
+        </Modal>
+      )}
+    </>
+  );
+}
+
 // ─── PACKAGES PANEL ───────────────────────────────────────────────────────
 function PackagesPanel() {
   const [pkgs, setPkgs]   = useState([]);

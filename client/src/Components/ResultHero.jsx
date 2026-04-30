@@ -9,7 +9,7 @@ import { useAuth } from "../context/Context";
 
 const ResultHero = () => {
   // Brand Colors: Teal: #3D7E8C | Orange: #F39221
-  const { faqs, clients, loading,packages } = useAuth();
+  const { faqs, clients, loading,packages,Testimonials } = useAuth();
 
   const results = [
     "Higher Google Rankings", "More Website Traffic", 
@@ -159,10 +159,7 @@ const ResultHero = () => {
           </motion.h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {[
-              { text: "Webtech Services helped us grow our business online and generate quality leads.", initial: "B", role: "Business Owner" },
-              { text: "Highly professional team with great digital marketing strategies.", initial: "M", role: "Marketing Director" }
-            ].map((client, i) => (
+            {Testimonials.map((client, i) => (
               <motion.div 
                 key={i} 
                 initial={{ opacity: 0, scale: 0.9 }}

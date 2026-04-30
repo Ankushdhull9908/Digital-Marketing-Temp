@@ -7,6 +7,7 @@ import clientRoutes from "./routes/clients.js";
 import faqRoutes from "./routes/faqs.js";
 import contactRoutes from "./routes/contact.js";
 import TestimonialRoutes from './routes/Testimonials.js'
+import JobRoutes from './routes/Jobs.js'
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use("/api/clients", clientRoutes);
 app.use("/api/faqs", faqRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/testimonials", TestimonialRoutes);
+app.use("/api/jobs",JobRoutes );
 
 // test
 app.get("/", (req, res) => {
