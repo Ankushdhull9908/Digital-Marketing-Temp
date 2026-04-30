@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 
-const API = "http://localhost:5000/api/influencer"||"https://digital-marketing-temp.onrender.com/api/influencer";
+var API = "https://digital-marketing-temp.onrender.com/api"
+  ? "https://digital-marketing-temp.onrender.com/api"
+  : "http://localhost:5000/api";
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 

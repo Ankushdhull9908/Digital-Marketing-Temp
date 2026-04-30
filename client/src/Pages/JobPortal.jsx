@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./JobPortal.css";
 
-const API = "http://localhost:5000/api" || "https://digital-marketing-temp.onrender.com/api";
+var API = "https://digital-marketing-temp.onrender.com/api"
+  ? "https://digital-marketing-temp.onrender.com/api"
+  : "http://localhost:5000/api";
 
 //  || "https://digital-marketing-temp.onrender.com/api"
 
