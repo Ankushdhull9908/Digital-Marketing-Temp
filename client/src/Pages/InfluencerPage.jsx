@@ -612,7 +612,7 @@ export default function InfluencerPage() {
       fetch(`${API}/campaigns`).then(r => r.json()).then(setLiveCampaigns).catch(console.error);
     }
     if (role === "brand") {
-      fetch(`${API}/influencers`).then(r => r.json()).then(setLiveInfluencers).catch(console.error);
+      fetch(`${API}/influencer`).then(r => r.json()).then(setLiveInfluencers).catch(console.error);
     }
   }, [role]);
 
@@ -629,7 +629,7 @@ export default function InfluencerPage() {
     setLoading(true);
     try {
       const body = { ...inf, platforms, niches, followers, avgViews, highestView, audienceAge, audienceGender };
-      const res  = await fetch(`${API}/influencers`, {
+      const res  = await fetch(`${API}/influencer`, {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
       });
       const data = await res.json();
@@ -662,7 +662,7 @@ export default function InfluencerPage() {
       setMyCampaignId(data._id);
       showToast("✅ Brand campaign posted! Influencers can now apply.");
       // Refresh influencers list
-      fetch(`${API}/influencers`).then(r => r.json()).then(setLiveInfluencers);
+      fetch(`${API}/influencer`).then(r => r.json()).then(setLiveInfluencers);
     } catch (err) {
       showToast("❌ " + err.message);
     } finally {
