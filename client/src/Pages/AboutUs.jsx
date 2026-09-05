@@ -381,7 +381,7 @@ const AboutUs = () => {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="max-w-6xl mx-auto rounded-[3rem] bg-slate-800 p-10 md:p-20 text-center text-white relative overflow-hidden shadow-2xl"
+          className="max-w-6xl mx-auto rounded-[3rem] bg-[#27717e] p-10 md:p-20 text-center text-white relative overflow-hidden shadow-2xl"
         >
           {/* Animated Background Glow */}
           <motion.div 
@@ -392,6 +392,14 @@ const AboutUs = () => {
             transition={{ duration: 4, repeat: Infinity }}
             className="absolute top-0 right-0 w-64 h-64 bg-[#3D7E8C] blur-[80px] rounded-full translate-x-1/2 -translate-y-1/2"
           ></motion.div>
+          <svg
+              className="absolute top-0 right-0 opacity-10 group-hover:scale-110 transition-transform"
+              width="200"
+              height="200"
+              viewBox="0 0 100 100"
+            >
+              <circle cx="100" cy="0" r="80" fill="white" />
+            </svg>
           
           <div className="relative z-10">
             <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">Ready to Grow Your <br/>Business Online?</h2>

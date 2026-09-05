@@ -261,8 +261,16 @@ const bottomRowProjects = allProjects
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-slate-900 rounded-[3rem] p-12 md:p-20 text-center text-white relative overflow-hidden mb-24"
+            className="bg-[#27717e] rounded-[3rem] p-12 md:p-20 text-center text-white relative overflow-hidden mb-24"
           >
+             <svg
+              className="absolute top-0 right-0 opacity-10 group-hover:scale-110 transition-transform"
+              width="200"
+              height="200"
+              viewBox="0 0 100 100"
+            >
+              <circle cx="100" cy="0" r="80" fill="white" />
+            </svg>
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#3D7E8C]/20 to-transparent" />
             <div className="relative z-10">
               <motion.h2

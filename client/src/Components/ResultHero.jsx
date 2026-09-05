@@ -157,15 +157,18 @@ const handleOpenModal = (packageTitle) => {
         </div>
 
         {/* Outer wrapper: no padding, no max-width */}
-        <div className="relative w-full bg-slate-950 overflow-hidden">
+        <div className="relative w-full bg-[#27717e] overflow-hidden">
+          
           <div className="animate-marquee-infinite flex">
+            
             {[...allClients, ...allClients].map((client, index) => (
               <div
                 key={`${client.id}-${index}`}
-                className="w-[300px] md:w-[450px] bg-slate-950 border-r border-slate-600 flex flex-col group transition-all duration-500 rounded-none"
+                className="w-[300px] md:w-[450px] bg-[#27717e] border-r border-slate-600 flex flex-col group transition-all duration-500 rounded-none"
               >
+                
                 {/* Video - No rounded corners */}
-                <div className="relative aspect-video bg-black overflow-hidden rounded-none">
+                <div className="relative aspect-video bg-[#27717e] overflow-hidden rounded-none">
                   <video 
                     src={client.video}
                     autoPlay 
@@ -184,6 +187,7 @@ const handleOpenModal = (packageTitle) => {
 
                 {/* Text Content */}
                 <div className="p-8 flex flex-col flex-grow rounded-none">
+                  
                   <p className="text-slate-300 font-medium text-base italic mb-6 leading-relaxed flex-grow">
                     "{client.text}"
                   </p>

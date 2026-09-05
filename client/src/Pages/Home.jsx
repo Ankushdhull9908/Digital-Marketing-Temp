@@ -87,11 +87,6 @@ useEffect(() => {
     {/* Overlay Content */}
     <div className="absolute inset-0 bg-gradient-to-r  flex flex-col justify-center p-6 md:p-24">
       <div className="max-w-[1600px] mx-auto w-full">
-        
-         
-       
-        
-        
       </div>
     </div>
 

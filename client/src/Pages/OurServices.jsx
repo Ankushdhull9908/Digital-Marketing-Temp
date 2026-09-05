@@ -262,8 +262,17 @@ const OurServices = () => {
 
       {/* --- CTA SECTION --- */}
       <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto bg-slate-900 rounded-[3rem] p-12 text-center text-white relative overflow-hidden">
+        
+        <div className="max-w-7xl mx-auto bg-[#27717e] rounded-[3rem] p-12 text-center text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#F39221] rounded-full blur-[120px] opacity-20 -mr-20 -mt-20" />
+          <svg
+              className="absolute top-0 right-0 opacity-10 group-hover:scale-110 transition-transform"
+              width="200"
+              height="200"
+              viewBox="0 0 100 100"
+            >
+              <circle cx="100" cy="0" r="80" fill="white" />
+            </svg>
           <h2 className="text-4xl font-black mb-6">Ready to start your project?</h2>
           <p className="text-white/60 mb-10 max-w-lg mx-auto">Contact us today for a free consultation and let's take your business to the next level.</p>
           <Link to="/contact" className="btn btn-wide bg-white text-slate-900 border-none hover:bg-slate-200 rounded-xl font-black uppercase tracking-widest">

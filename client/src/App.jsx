@@ -24,6 +24,8 @@ import UserDashboard from './Pages/UserDashboard'
 import Career from './Pages/Carrer'
 import BlogList from './Pages/BlogList'
 import Hrportal from './Components/Hrportal'
+import TermsAndConditions from './Pages/TermsCondition'
+import PrivacyPolicy from './Pages/PrivacyPolicy'
 
 
 function App() {
@@ -56,6 +58,8 @@ function App() {
         <Route path='/UserDashboard' element={<UserDashboard/>}/>
         <Route path='/Career' element={<Career/>}/>
         <Route path='/Hrportal' element={<Hrportal/>}/>
+        <Route path='/terms-and-conditions' element={<TermsAndConditions/>}/>
+        <Route path='/privacy-policy' element={<PrivacyPolicy/>}/>
       </Routes>
       <Footer/>
     </>

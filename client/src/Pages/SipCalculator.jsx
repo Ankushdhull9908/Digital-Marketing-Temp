@@ -137,7 +137,7 @@ const SipCalculator = () => {
           <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* LARGE TOTAL VALUE CARD */}
-            <div className="md:col-span-2 bg-slate-900 rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden flex flex-col justify-between group">
+            <div className="md:col-span-2 bg-[#27717e] rounded-[3rem] p-10 md:p-14 text-white relative overflow-hidden flex flex-col justify-between group">
               {/* Background Art */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-[#3D7E8C] rounded-full blur-[120px] opacity-20 -mr-20 -mt-20 group-hover:opacity-30 transition-opacity duration-700" />
               

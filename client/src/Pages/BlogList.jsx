@@ -82,7 +82,7 @@ const BlogList = () => {
                   </div>
                 </div>
 
-                <button className="w-full py-4 bg-[#002D62] text-white font-black text-sm uppercase tracking-widest rounded-xl hover:bg-[#F39221] transition-colors duration-300 flex items-center justify-center gap-2">
+                <button className="w-full py-4 bg-[#27717e] text-white font-black text-sm uppercase tracking-widest rounded-xl hover:bg-[#F39221] transition-colors duration-300 flex items-center justify-center gap-2">
                   READ MORE <ArrowRight size={16} />
                 </button>
               </div>
