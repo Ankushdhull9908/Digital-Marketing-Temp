@@ -1,7 +1,7 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Monitor, FileUser, HelpCircle, Users, Package,
-  Quote, Mail, Briefcase, BarChart3, FileText, LogOut,
+  Quote, Mail, Briefcase, BarChart3, FileText, LogOut,Building2
 } from "lucide-react";
 
 const navItems = [
@@ -17,6 +17,7 @@ const navItems = [
   { to: "/dashboard/influencer", label: "Influencer Hub", icon: <Users size={18} /> },
   { to: "/dashboard/blogs", label: "Blogs", icon: <FileText size={18} /> },
   { to: "/dashboard/analytics", label: "Analytics", icon: <BarChart3 size={18} /> },
+  { to: "/dashboard/industries", label: "Industries", icon: <Building2 size={18} /> },
 ];
 
 const AdminLayout = () => {

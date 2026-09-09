@@ -39,8 +39,7 @@ import JobsAdmin from "./Pages/admin/JobsAdmin";
 import InfluencerAdmin from "./Pages/admin/InfluencerAdmin";
 import BlogsAdmin from "./Pages/admin/BlogsAdmin";
 import AnalyticsAdmin from "./Pages/admin/AnalyticsAdmin";
-
-
+import IndustriesAdmin from './Pages/admin/IndustriesAdmin'
 
 function App() {
   //
@@ -87,6 +86,7 @@ function App() {
   <Route path="influencer" element={<InfluencerAdmin />} />
   <Route path="blogs" element={<BlogsAdmin />} />
   <Route path="analytics" element={<AnalyticsAdmin />} />
+  <Route path="industries" element={<IndustriesAdmin />} />
 </Route>
       </Routes>
       <Footer/>

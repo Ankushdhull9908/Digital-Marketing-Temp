@@ -5,10 +5,6 @@ import {  Trash2,ChevronDown /* whatever icons that panel used */ } from "lucide
 import {Badge, ActionBtn} from "./shared/AdminUI";
 import { API } from "./shared/adminApi";
 
-
-
-
-
 function InfluencerAdmin() {
   const [subTab, setSubTab] = useState("campaigns");
   const [campaigns, setCampaigns] = useState([]);
